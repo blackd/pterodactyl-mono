@@ -7,9 +7,12 @@ FROM        alpine:edge
 
 LABEL       author="Plamen K. Kosseff" maintainer="p.kosseff@gmail.com"
 
-RUN         echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
-            && apk add --update --no-cache openssl curl sqlite libgdiplus mono \
-            && adduser -D -h /home/container container
+RUN         echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
+            apk add --update --no-cache openssl curl sqlite libgdiplus mono && \
+            apk add --no-cache --virtual=.build-dependencies ca-certificates && \
+            cert-sync /etc/ssl/certs/ca-certificates.crt && \
+            apk del .build-dependencies && \
+            adduser -D -h /home/container container
 
 USER        container
 ENV         HOME=/home/container USER=container
